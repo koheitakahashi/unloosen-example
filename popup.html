@@ -1,21 +1,14 @@
 <html>
-<head>
-  <script src="/node_modules/unloosen-ruby-loader/dist/entry/module-popup.esm.js" type="module"></script>
-  <style>
-    body{
-      width: 300px;
-      height: 300px;
-    }
-  </style>
-</head>
-<body>
-  <p id="tabnum"></p>
-  <form id="form">
-    <fieldset>
-      <legend>new h1 content</legend>
-      <label><input type="text" name="title" id="title"></label>
-      <button id="submit">Replace h1 content</button>
-    </fieldset>
-  </form>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <script src="/node_modules/unloosen-ruby-loader/dist/entry/module-popup.esm.js" type="module"></script>
+    <title>Insert Text</title>
+  </head>
+  <body>
+    <form id="form">
+      <label for="input">文字列を入力してください:</label>
+      <input type="text" id="input" name="input">
+      <button type="submit" id="submit">追加</button>
+    </form>
+  </body>
 </html>
