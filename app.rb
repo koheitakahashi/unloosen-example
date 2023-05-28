@@ -13,36 +13,42 @@ class Utils
   end
 end
 
-content_script site: "www.example.com" do
-  h1 = document.querySelector("h1")
-  h1.innerText = "Hello unloosen!"
-  existed_div = document.querySelector("div")
-  p_element = document.createElement('p')
+content_script enable_all_site: true do
+  chrome.runtime.onMessage.addListener do |_e|
+    title = document.querySelector('h1').textContent
 
-  chrome.runtime.onMessage.addListener do |message|
-    new_text_element = document.createTextNode(message)
-    p_element.appendChild(new_text_element)
-    existed_div.appendChild(p_element)
+    url = window.location.href
+    link = "[#{title}](#{url})"
 
+    input = document.createElement("input")
+    input.id = 'tmp-input'
+    input.type = "text"
+    input.style = "position: absolute; left: -1000px; top: -1000px;"
+    input.value = link
+
+    flagment = document.createDocumentFragment()
+    flagment.appendChild(input)
+    document.body.appendChild(flagment)
+
+    input.select()
+    document.execCommand("copy")
+
+    tmp_input = document.querySelector('#tmp-input')
+    tmp_input.remove()
+
+    p 'copied'
     true
   end
 end
 
 popup do
-  submit_button = document.querySelector("button#submit")
-  submit_button.addEventListener "click" do |e|
-    form_text = document.querySelector("input#input").value
+  query_object = Utils.build_js_object(active: true, currentWindow: true)
+  chrome.tabs.query(query_object) do |tabs|
+    tab = tabs.at(0)
 
-    query_object = Utils.build_js_object(active: true, currentWindow: true)
-    chrome.tabs.query(query_object) do |tabs|
-      tab = tabs.at(0)
-
-      chrome.tabs.sendMessage(
-        tab[:id],
-        form_text,
-      )
-    end
-
-    e.preventDefault
+    chrome.tabs.sendMessage(
+      tab[:id],
+      'message copy',
+    )
   end
 end
